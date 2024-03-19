@@ -1,0 +1,38 @@
+#!/bin/bash
+
+DIR="$HOME/.dotfiles.git"
+ALIASCMD="alias dotfiles='git --git-dir=$HOME/.dotfiles.git --work-tree=$HOME'"
+
+# required to use alias in this script
+shopt -s expand_aliases
+
+# define alias and use it
+alias dotfiles='git --git-dir=$HOME/.dotfiles.git --work-tree=$HOME'
+dotfiles config --local status.showUntrackedFiles no
+
+# add alias to shell rc
+shell=$(basename "$SHELL")
+case $shell in
+	bash)
+		if ! grep -q "alias dotfiles=" $HOME/.bashrc; then
+			echo "alias dotfiles='git --git-dir=$HOME/.dotfiles.git --work-tree=$HOME'" >> "$HOME/.bashrc"
+			echo "Appended alias 'dotfiles' to .bashrc"
+		else
+			echo "Alias 'dotfiles' already in .bashrc!"
+		fi
+		;;
+	zsh)
+		if ! grep -q "alias dotfiles=" $HOME/.zshrc; then
+			echo "alias dotfiles='git --git-dir=$HOME/.dotfiles.git --work-tree=$HOME'" >> "$HOME/.zshrc"
+			echo "Appended alias 'dotfiles' to .zshrc"
+		else
+			echo "Alias 'dotfiles' already in .zshrc!"
+		fi
+		;;
+	*)
+		echo "Unsupported shell; $shell"
+		echo "Add \n$ALIASCMD\n to your shell rc"
+		;;
+esac
+
+echo "Finished initialization of dotfiles"
